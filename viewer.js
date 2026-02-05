@@ -1753,45 +1753,31 @@ function renderOptimizationResults() {
     }
   });
   
-  // Score value inputs - stop propagation to prevent details from closing
+  // Score value inputs
   ['stat', 'aptitude', 'unique', 'standard', 'highvalue', 'scenario'].forEach(key => {
     const input = document.getElementById(`score-${key}`);
-    if (input) {
-      ['click', 'mousedown', 'pointerdown'].forEach(evt => {
-        input.addEventListener(evt, e => e.stopPropagation());
-      });
-      input.addEventListener('change', () => {
-        const val = parseInt(input.value) || 0;
-        const storeKey = key === 'highvalue' ? 'highValue' : key;
-        scoreValues[storeKey] = val;
-        saveOptimizationSettings();
-        recalculateScores();
-        renderOptimizationResults();
-      });
-    }
+    input?.addEventListener('change', () => {
+      const val = parseInt(input.value) || 0;
+      const storeKey = key === 'highvalue' ? 'highValue' : key;
+      scoreValues[storeKey] = val;
+      saveOptimizationSettings();
+      recalculateScores();
+      renderOptimizationResults();
+    });
   });
   
   // Reset scores
-  document.getElementById('reset-scores')?.addEventListener('click', (e) => {
-    e.stopPropagation();
+  document.getElementById('reset-scores')?.addEventListener('click', () => {
     scoreValues = { ...DEFAULT_SCORE_VALUES };
     saveOptimizationSettings();
     recalculateScores();
     renderOptimizationResults();
   });
   
-  // High-value skills add - stop propagation to prevent details from closing
-  const hvInput = document.getElementById('hv-skill-input');
-  if (hvInput) {
-    ['click', 'mousedown', 'pointerdown'].forEach(evt => {
-      hvInput.addEventListener(evt, e => e.stopPropagation());
-    });
-  }
-  
-  const hvAddBtn = document.getElementById('hv-add-btn');
-  hvAddBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const skillName = hvInput?.value.trim();
+  // High-value skills add
+  document.getElementById('hv-add-btn')?.addEventListener('click', () => {
+    const input = document.getElementById('hv-skill-input');
+    const skillName = input?.value.trim();
     if (skillName && !highValueSkills.includes(skillName)) {
       highValueSkills.push(skillName);
       saveOptimizationSettings();
@@ -1813,8 +1799,7 @@ function renderOptimizationResults() {
   });
   
   // Reset high-value skills
-  document.getElementById('reset-hv-skills')?.addEventListener('click', (e) => {
-    e.stopPropagation();
+  document.getElementById('reset-hv-skills')?.addEventListener('click', () => {
     highValueSkills = [...DEFAULT_HIGH_VALUE_SKILLS];
     saveOptimizationSettings();
     recalculateScores();
