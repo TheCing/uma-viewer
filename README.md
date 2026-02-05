@@ -17,11 +17,39 @@ English names are fetched from community translation projects:
 - [uma-tools](https://github.com/TheCing/uma-tools) - Global skill and character names
 - [UmaTL/hachimi-tl-en](https://github.com/UmaTL/hachimi-tl-en) - Text translations
 
-## Usage
+## Quick Start (Easy Mode)
+
+**Double-click `Start Uma Viewer.bat`** to open the launcher control panel.
+
+The launcher provides a simple web interface with buttons for each step:
+1. **Extract** - Pull data from the running game
+2. **Enrich** - Add English names to your data
+3. **View** - Open the character browser
+
+**Requirements:**
+- Python 3.10+ installed (easiest: [Get it from Microsoft Store](https://apps.microsoft.com/detail/9pnrbtzxmb4z))
+- UmaExtractor in your Downloads folder or nearby
+- Uma Musume running on the Veteran List page (for extraction)
+
+## Manual Usage (Advanced)
 
 ### 1. Export your data
 
-Use [UmaExtractor](https://github.com/FabulousCupcake/UmaExtractor) to export your trained character data to `data.json`.
+#### Option A: Automatic (if you have UmaExtractor installed)
+
+```bash
+python run_extractor.py
+```
+
+This script will find UmaExtractor on your system and run it automatically. Make sure:
+1. Uma Musume Pretty Derby is running
+2. You're on the Veteran List page (Enhance → List)
+
+The script searches for UmaExtractor in common locations (`../UmaExtractor/`, `~/Downloads/UmaExtractor/`, etc.) or you can set the `UMAEXTRACTOR_PATH` environment variable.
+
+#### Option B: Manual
+
+Use [UmaExtractor](https://github.com/FabulousCupcake/UmaExtractor) directly to export your trained character data, then copy `data.json` to this directory.
 
 ### 2. Enrich the data
 
@@ -61,7 +89,7 @@ Open http://localhost:8000/viewer.html in your browser.
 
 ## Viewer Sections
 
-- **Stats**: Speed, Stamina, Power, Guts, Wisdom
+- **Stats**: Speed, Stamina, Power, Guts, Wit
 - **Skills**: All learned skills with levels
 - **Sparks**: Inherited factors/sparks
 - **Race Wins**: Trophies earned during training
