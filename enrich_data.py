@@ -20,16 +20,23 @@ Data sources:
 """
 
 import json
+import subprocess
 import sys
 from pathlib import Path
-
-import requests
 
 # Fix Unicode output on Windows consoles
 if sys.stdout:
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if sys.stderr:
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
+# Auto-install requests if not available
+try:
+    import requests
+except ImportError:
+    print("Installing required dependency: requests...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "requests"])
+    import requests
 
 # uma-tools data URLs
 # Global version (official English names)

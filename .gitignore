@@ -2,6 +2,9 @@
 data.json
 enriched_data.json
 
+# Release zips
+*.zip
+
 # Python
 __pycache__/
 *.pyc
