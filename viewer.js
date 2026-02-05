@@ -1582,6 +1582,10 @@ function renderOptimizationResults() {
   const container = document.getElementById('optimize-results');
   if (!container || !optimizationResults) return;
   
+  // Preserve open state of details elements before re-rendering
+  const scoringDetailsOpen = container.querySelector('.optimize-settings')?.open ?? false;
+  const hvSkillsDetailsOpen = container.querySelectorAll('.optimize-settings')[1]?.open ?? false;
+  
   const protectedCount = optimizationResults.filter(r => r.isProtected && r.score < transferThreshold).length;
   
   // Filter results if showing only protected
@@ -1649,7 +1653,7 @@ function renderOptimizationResults() {
       </div>
     </div>
     
-    <details class="optimize-settings">
+    <details class="optimize-settings" ${scoringDetailsOpen ? 'open' : ''}>
       <summary>// scoring settings</summary>
       <div class="settings-content">
         <div class="settings-row">
@@ -1680,7 +1684,7 @@ function renderOptimizationResults() {
       </div>
     </details>
     
-    <details class="optimize-settings">
+    <details class="optimize-settings" ${hvSkillsDetailsOpen ? 'open' : ''}>
       <summary>// high-value skills (${highValueSkills.length})</summary>
       <div class="settings-content">
         <div class="hv-skills-list" id="hv-skills-list">
