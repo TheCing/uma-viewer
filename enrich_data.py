@@ -157,6 +157,7 @@ SPARK_NAME_CORRECTIONS = {
     "Autumn Girl ○": "Fall Runner ○",
     "Autumn Girl ◎": "Fall Runner ◎",
     "Autumn Girl ×": "Fall Runner ×",
+    "Hold Your Tail High": "Tail Held High",
     
     # Stat name
     "Wisdom": "Wit",
