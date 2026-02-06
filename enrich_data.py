@@ -157,7 +157,6 @@ SPARK_NAME_CORRECTIONS = {
     "Autumn Girl ○": "Fall Runner ○",
     "Autumn Girl ◎": "Fall Runner ◎",
     "Autumn Girl ×": "Fall Runner ×",
-    "Hold Your Tail High": "Tail Held High",
     
     # Stat name
     "Wisdom": "Wit",
@@ -501,21 +500,21 @@ def get_spark_name(data: dict, spark_id: int) -> str | None:
             if skill_name:
                 return skill_name  # Global name from skillnames.json
     
-    # SECOND: Check text_data category 147 FIRST (authoritative for spark names)
-    # This has the correct names for ALL spark types including skill sparks
-    cat_147 = text_data.get("147", {})
-    spark_name = cat_147.get(str(spark_id))
-    if spark_name:
-        return correct_spark_name(spark_name)
-    
-    # THIRD: Fall back to skill formula for skill sparks (200XXXX format, 7 digits)
-    # Only used if not found in category 147
+    # SECOND: For skill sparks (200XXXX format, 7 digits), try Global skillnames.json FIRST
+    # This gives us authoritative Global names directly without needing corrections
     # Formula: skill_id = (spark_id // 100) * 10 + (spark_id % 10)
     if 2000000 <= spark_id < 3000000:
         skill_id = (spark_id // 100) * 10 + (spark_id % 10)
         skill_name = get_skill_name(data, skill_id)
         if skill_name:
-            return skill_name
+            return skill_name  # Global name from skillnames.json - no corrections needed
+    
+    # THIRD: Check text_data category 147 for non-skill sparks (stats, aptitudes, etc.)
+    # or as fallback for skill sparks not found in Global skillnames.json
+    cat_147 = text_data.get("147", {})
+    spark_name = cat_147.get(str(spark_id))
+    if spark_name:
+        return correct_spark_name(spark_name)
     
     # FOURTH: Check if it's a race spark (100XXXX format, 7 digits)
     if 1000000 <= spark_id < 10000000:
