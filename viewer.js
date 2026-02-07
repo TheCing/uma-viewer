@@ -912,6 +912,7 @@ function renderDetail(char) {
   const isParentMode = viewMode === 'parent';
   
   if (isParentMode) {
+    const rankScore = char.rank_score ? char.rank_score.toLocaleString() : '0';
     document.getElementById('detail').innerHTML = `
       <div class="parent-mode">
         <div class="parent-header">
@@ -920,6 +921,7 @@ function renderDetail(char) {
             <button class="optimize-btn" id="optimize-btn">optimize account</button>
           </div>
           <div class="parent-meta">
+            <span class="parent-rank-badge">${rankScore}</span>
             ${char.race_cloth_name_en ? `<span class="parent-outfit">${char.race_cloth_name_en}</span>` : ''}
             ${char.create_time ? `<span class="parent-date">${char.create_time}</span>` : ''}
           </div>

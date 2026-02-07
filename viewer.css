@@ -279,9 +279,12 @@ code, .mono {
 
 .character-item .parent-rank {
   font-weight: 700;
-  color: var(--yellow);
+  color: var(--orange);
+  background: rgba(210, 153, 34, 0.15);
+  padding: 2px 8px;
+  border-radius: 10px;
   margin-right: 10px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .character-item .spark-preview {
@@ -769,6 +772,16 @@ code, .mono {
 
 .parent-outfit {
   color: var(--accent);
+}
+
+.parent-rank-badge {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--orange);
+  background: rgba(210, 153, 34, 0.2);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .parent-mode .detail-header {
@@ -2123,10 +2136,13 @@ code, .mono {
 }
 
 .optimize-rank {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
-  color: var(--yellow);
+  color: var(--orange);
+  background: rgba(210, 153, 34, 0.15);
+  padding: 3px 10px;
+  border-radius: 10px;
   margin-left: auto;
   margin-right: 12px;
 }
