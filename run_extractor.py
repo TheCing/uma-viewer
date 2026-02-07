@@ -111,6 +111,10 @@ def run_extractor(extractor_path: Path, auto_confirm: bool = False) -> bool:
         print(f"Running {extractor_path.name}...")
         print("(This may take up to 60 seconds)\n")
         
+        # Set PYTHONIOENCODING in case the exe is a PyInstaller bundle
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8:replace'
+        
         try:
             result = subprocess.run(
                 [str(extractor_path)],
@@ -119,6 +123,7 @@ def run_extractor(extractor_path: Path, auto_confirm: bool = False) -> bool:
                 text=True,
                 encoding='utf-8',
                 errors='replace',
+                env=env,
             )
             
             # Check if data.json was created
@@ -149,6 +154,10 @@ def run_extractor(extractor_path: Path, auto_confirm: bool = False) -> bool:
         print("(This requires 'frida' and 'msgpack' packages)")
         print("(This may take up to 60 seconds)\n")
         
+        # Set PYTHONIOENCODING to force UTF-8 output from UmaExtractor
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8:replace'
+        
         try:
             result = subprocess.run(
                 [sys.executable, str(extractor_path)],
@@ -157,6 +166,7 @@ def run_extractor(extractor_path: Path, auto_confirm: bool = False) -> bool:
                 text=True,
                 encoding='utf-8',
                 errors='replace',
+                env=env,
             )
             
             data_json = SCRIPT_DIR / "data.json"
