@@ -21,6 +21,10 @@ let protectionRules = JSON.parse(localStorage.getItem('uma_protection_rules')) |
 let protectionLogic = localStorage.getItem('uma_protection_logic') || 'or'; // 'or' or 'and'
 let showOnlyProtected = false;
 
+// Optimizer list sorting: 'date' or 'score', and direction
+let optimizerSortBy = localStorage.getItem('uma_optimizer_sort') || 'date';
+let optimizerSortAsc = localStorage.getItem('uma_optimizer_sort_asc') === 'true';
+
 // Editable scoring values (points per star or flat points)
 const DEFAULT_SCORE_VALUES = {
   stat: 2,        // Blue (stats): pts per ★
@@ -806,9 +810,13 @@ function renderList(chars) {
   const isParentMode = viewMode === 'parent';
   
   list.innerHTML = chars.map((c, i) => {
-    const metaContent = isParentMode 
-      ? `<span class="spark-preview">${getSparkSummary(c)}</span>`
-      : `<span class="list-score">${formatScore(c.rank_score)}</span> • ${c.wins || 0} wins`;
+    let metaContent;
+    if (isParentMode) {
+      const sparkScore = calculateSparkScore(c);
+      metaContent = `<span class="parent-score">${sparkScore.total} pts</span><span class="spark-preview">${getSparkSummary(c)}</span>`;
+    } else {
+      metaContent = `<span class="list-score">${formatScore(c.rank_score)}</span> • ${c.wins || 0} wins`;
+    }
     
     return `
       <div class="character-item ${data.indexOf(c) === selectedIndex ? 'active' : ''}" data-index="${data.indexOf(c)}">
@@ -1594,8 +1602,25 @@ function renderOptimizationResults() {
     displayResults = optimizationResults.filter(r => r.isProtected && r.score < transferThreshold);
   }
   
-  const toTransfer = displayResults.filter(r => r.toTransfer);
-  const toKeep = displayResults.filter(r => !r.toTransfer);
+  let toTransfer = displayResults.filter(r => r.toTransfer);
+  let toKeep = displayResults.filter(r => !r.toTransfer);
+  
+  // Sort both lists
+  const sortFn = (a, b) => {
+    if (optimizerSortBy === 'score') {
+      return optimizerSortAsc ? a.score - b.score : b.score - a.score;
+    } else {
+      // Sort by date
+      if (!a.createTime && !b.createTime) return 0;
+      if (!a.createTime) return 1;
+      if (!b.createTime) return -1;
+      return optimizerSortAsc 
+        ? a.createTime.localeCompare(b.createTime) 
+        : b.createTime.localeCompare(a.createTime);
+    }
+  };
+  toTransfer.sort(sortFn);
+  toKeep.sort(sortFn);
   
   container.innerHTML = `
     <div class="optimize-summary">
@@ -1700,6 +1725,15 @@ function renderOptimizationResults() {
       </div>
     </details>
     
+    <div class="optimize-sort-controls">
+      <span class="optimize-sort-label">Sort by:</span>
+      <button class="optimize-sort-btn ${optimizerSortBy === 'date' ? 'active' : ''}" id="sort-by-date">Date</button>
+      <button class="optimize-sort-btn ${optimizerSortBy === 'score' ? 'active' : ''}" id="sort-by-score">Score</button>
+      <button class="optimize-sort-dir" id="sort-dir-btn" title="Toggle sort direction">
+        ${optimizerSortAsc ? '↑ Asc' : '↓ Desc'}
+      </button>
+    </div>
+    
     ${toTransfer.length > 0 ? `
       <div class="optimize-section">
         <div class="optimize-section-title transfer">// to transfer (${toTransfer.length})</div>
@@ -1726,6 +1760,23 @@ function renderOptimizationResults() {
       const belowThreshold = r.score < transferThreshold;
       r.toTransfer = belowThreshold && !r.isProtected;
     });
+    renderOptimizationResults();
+  });
+  
+  // Sort controls
+  document.getElementById('sort-by-date')?.addEventListener('click', () => {
+    optimizerSortBy = 'date';
+    localStorage.setItem('uma_optimizer_sort', optimizerSortBy);
+    renderOptimizationResults();
+  });
+  document.getElementById('sort-by-score')?.addEventListener('click', () => {
+    optimizerSortBy = 'score';
+    localStorage.setItem('uma_optimizer_sort', optimizerSortBy);
+    renderOptimizationResults();
+  });
+  document.getElementById('sort-dir-btn')?.addEventListener('click', () => {
+    optimizerSortAsc = !optimizerSortAsc;
+    localStorage.setItem('uma_optimizer_sort_asc', optimizerSortAsc);
     renderOptimizationResults();
   });
   
